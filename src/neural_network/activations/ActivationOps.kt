@@ -1,5 +1,7 @@
-package NeuralNetwork
+package neural_network.activations
 
+import neural_network.Matrix
+import neural_network.MatrixOps
 import kotlin.math.exp
 
 class ActivationOps {
@@ -7,7 +9,7 @@ class ActivationOps {
     class Sigmoid : Activation() {
 
         override fun call(x: Matrix) : Matrix {
-            val activation = Matrix( x.m , x.n )
+            val activation = Matrix(x.m, x.n)
             for ( i in 0 until x.m ) {
                 for ( j in 0 until x.n ) {
                     activation.set( i , j , sigmoid_( x.get( i , j ) ) )
@@ -17,7 +19,7 @@ class ActivationOps {
         }
 
         override fun gradient(x: Matrix): Matrix {
-            val gradient = Matrix( x.m , x.n )
+            val gradient = Matrix(x.m, x.n)
             for ( i in 0 until x.m ) {
                 for ( j in 0 until x.n ) {
                     gradient.set( i , j , sigmoidGradient_( x.get( i , j ) ) )
@@ -35,10 +37,25 @@ class ActivationOps {
 
     }
 
+    class Softmax : Activation() {
+
+        override fun call(x: Matrix): Matrix {
+            val e_x = MatrixOps.exp(x - MatrixOps.max_along_axis0(x))
+            return e_x * ( 1 / MatrixOps.sum_along_axis0(e_x))
+        }
+
+        override fun gradient(x: Matrix): Matrix {
+            val e_x = MatrixOps.exp(x - MatrixOps.max_along_axis0(x))
+            val s = e_x * ( 1 / MatrixOps.sum_along_axis0(e_x))
+            return (s * ( s - 1.0 )) * -1.0
+        }
+
+    }
+
     class ReLU : Activation() {
 
         override fun call(x: Matrix): Matrix {
-            val activation = Matrix( x.m , x.n )
+            val activation = Matrix(x.m, x.n)
             for ( i in 0 until x.m ) {
                 for ( j in 0 until x.n ) {
                     activation.set( i , j , relu_( x.get( i , j ) ) )
@@ -48,7 +65,7 @@ class ActivationOps {
         }
 
         override fun gradient(x: Matrix): Matrix {
-            val gradient = Matrix( x.m , x.n )
+            val gradient = Matrix(x.m, x.n)
             for ( i in 0 until x.m ) {
                 for ( j in 0 until x.n ) {
                     gradient.set( i , j , reluGradient_( x.get( i , j ) ) )

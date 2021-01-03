@@ -1,11 +1,10 @@
-package NeuralNetwork
+package neural_network
 
 class Matrix(val m : Int, val n : Int, var name : String = "matrix" ) {
 
     private var data = Array( m ){ DoubleArray( n ) }
 
     fun getRow( i : Int ) : DoubleArray {
-        assert( i < m )
         return data[ i ]
     }
 
@@ -56,13 +55,33 @@ class Matrix(val m : Int, val n : Int, var name : String = "matrix" ) {
     }
 
     operator fun minus(mulV: Matrix): Matrix {
-        val sum = Matrix( mulV.m , mulV.n )
+        val difference = Matrix( mulV.m , mulV.n )
         for ( i in 0 until mulV.m ) {
             for ( j in 0 until mulV.n ) {
-                sum.set( i , j , data[ i ][ j ] - mulV.get( i , j ) )
+                difference.set( i , j , data[ i ][ j ] - mulV.get( i , j ) )
             }
         }
-        return sum
+        return difference
+    }
+
+    operator fun minus( v : Double ): Matrix {
+        val difference = Matrix( m , n )
+        for ( i in 0 until m ) {
+            for ( j in 0 until n ) {
+                difference.set( i , j , data[ i ][ j ] - v )
+            }
+        }
+        return difference
+    }
+
+    operator fun div( m2 : Matrix ): Matrix {
+        val res = Matrix( m2!!.m , m2!!.n )
+        for ( i in 0 until m2.m ) {
+            for ( j in 0 until m2.n ) {
+                res.set( i , j , data[ i ][ j ] / m2.get( i , j ) )
+            }
+        }
+        return res
     }
 
     operator fun times( m2 : Matrix?): Matrix {
