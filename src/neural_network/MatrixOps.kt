@@ -103,6 +103,17 @@ class MatrixOps {
             return out
         }
 
+        fun constant( p : Matrix , c : Double ) : Matrix {
+            val out = Matrix( p.m , p.n )
+            for ( i in 0 until p.m ) {
+                for ( j in 0 until p.n ) {
+                    out.set( i , j , c )
+                }
+            }
+            return out
+        }
+
+
         fun rand(start: Int, end: Int): Double {
             return (Math.random() * (end - start + 1)) + start
         }
